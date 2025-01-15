@@ -15,7 +15,7 @@ namespace LearnASPNETCore.Data
                 new {Id = 2, Name = "Racing"},
                 new {Id = 3, Name = "Sport"},
                 new {Id = 4, Name = "Simulation" }
-                );
+            );
         }
     }
 }

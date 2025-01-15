@@ -2,27 +2,23 @@
 using LearnASPNETCore.Dtos;
 using LearnASPNETCore.Entities;
 using LearnASPNETCore.Mapping;
+using Microsoft.EntityFrameworkCore;
 
 namespace LearnASPNETCore.Endpoints
 {
     public static class GamesEndpoint
     {
-        private static readonly List<GameSummaryDto> games = [
-            new (1, "GTA V", "Role-Playing", 400, 59.99F),
-            new (2, "RDR 2", "Role-Playing", 500, 69.99F),
-            new (3, "NFS", "Racing", 200, 29.99F),
-            new (4, "FIFA", "Sport", 400, 49.99F),
-            new (5, "RWC", "Sport", 300, 19.99F),
-            new (6, "MS Flight Simulator", "Simulation", 1100, 59.99F)
-        ];
-
         public static RouteGroupBuilder MapGamesEndpoints(this WebApplication app)
         {
             var group = app.MapGroup("games")
                            .WithParameterValidation();
 
 
-            group.MapGet("/", () => games);
+            group.MapGet("/", (GameStoreContext dbContext) => {
+                return dbContext.Games.Include(game => game.Genre)
+                                      .Select(game => game.ToGameSummaryDto())
+                                      .AsNoTracking();
+            });
 
 
             group.MapGet("/{id}", (int id, GameStoreContext dbContext) =>
@@ -60,9 +56,9 @@ namespace LearnASPNETCore.Endpoints
             });
 
 
-            group.MapDelete("/{id}", (int id) =>
+            group.MapDelete("/{id}", (int id, GameStoreContext dbContext) =>
             {
-                games.RemoveAll(game => game.Id == id);
+                dbContext.Games.Where(game => game.Id == id).ExecuteDelete();
 
                 return Results.NoContent();
             });
