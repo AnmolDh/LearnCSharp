@@ -1,17 +1,19 @@
 using LearnASPNETCore.Data;
-using LearnASPNETCore.Endpoints;
+using SMS.Data;
+using SMS.Endpoints;
 
 var builder = WebApplication.CreateBuilder(args);
 
 var sqliteConnString = builder.Configuration.GetConnectionString("sqliteConnString");
-builder.Services.AddSqlite<GameStoreContext>(sqliteConnString);
+builder.Services.AddSqlite<SMSDbContext>(sqliteConnString);
 
 var app = builder.Build();
 
-app.MapGet("/", () => "Hello World!");
+app.MapGet("/", () => "API is Running!");
 
-app.MapGamesEndpoints();
-app.MapGenresEndpoints();
+app.MapStudentsEndpoints();
+app.MapCoursesEndpoints();
+app.MapEnrollmentsEndpoints();
 
 await app.MigrateDbAsync();
 

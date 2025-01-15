@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using SMS.Data;
 
 namespace LearnASPNETCore.Data
 {
@@ -7,7 +8,7 @@ namespace LearnASPNETCore.Data
         public static async Task MigrateDbAsync(this WebApplication app)
         {
             using var scope = app.Services.CreateScope();
-            var dbContext = scope.ServiceProvider.GetRequiredService<GameStoreContext>();
+            var dbContext = scope.ServiceProvider.GetRequiredService<SMSDbContext>();
             await dbContext.Database.MigrateAsync();
         }
     }
